@@ -10,7 +10,7 @@
 #pragma package(smart_init)
 #pragma resource "*.dfm"
 TForm1 *Form1;
-//Шестиугольник. Сделать вращение, масштабирование, перемещение
+//Шестиугольник. Сделать вращение, масштабирование, перемещение, закраска
 void printhexagon(MyPoint* hexagon, TImage* Image1);
 void rotandscale(TImage* Image1, double par, int sw, char a, char b, MyPoint& V);
 void hexagoninit(MyPoint* h);
