@@ -52,6 +52,7 @@ double r[3][3];
  r[2][2]=1;
 bool out_f=true;
 int k;
+int i, j;
 //Для проверки выхода точек в отрицательную область
 while(out_f)
 {
@@ -63,7 +64,7 @@ v1[2]=1;
 
 int v2[3]={0, 0, 1};
 //Вычисление координат точек относительно 0
-int i, j;
+
 for(k=2; k<8; k++)
 {
 for (i = 0;i < 3;i++)
@@ -92,8 +93,33 @@ hexagon[k].set_y(v2[1]);
 }
 
 }
-//Отрисовка
+//Отрисовка контура
 int off_x, off_y;
+for(k=1; k<6; k++)
+{
+Image1->Canvas->MoveTo(hexagon[k].get_x()+hexagon[0].get_x(),hexagon[k].get_y()+hexagon[0].get_y());
+Image1->Canvas->LineTo(hexagon[k+1].get_x()+hexagon[0].get_x(),hexagon[k+1].get_y()+hexagon[0].get_y());
+}
+Image1->Canvas->MoveTo(hexagon[k].get_x()+hexagon[0].get_x(),hexagon[k].get_y()+hexagon[0].get_y());
+Image1->Canvas->LineTo(hexagon[1].get_x()+hexagon[0].get_x(),hexagon[1].get_y()+hexagon[0].get_y());
+//Закраска
+for(j=0; j<441; j++)
+{
+int f_pix=-1;
+for(i=0; i<537; i++)
+{
+   if((Image1->Canvas->Pixels[i][j]==clBlack)&&(f_pix==-1))
+   {
+    f_pix=i;
+   }
+   else if((f_pix!=-1)&&(Image1->Canvas->Pixels[i][j]==clBlack)&&(Image1->Canvas->Pixels[i-1][j]!=clBlack))
+   {
+      for(k=i-1; k>f_pix;k--)
+      {Image1->Canvas->Pixels[k][j]=clRed;}
+   }
+}
+}
+//Расставление букв точек
 for(k=1; k<7; k++)
 {
 //Определение значения отступа для буквы
@@ -102,9 +128,8 @@ off_y=(hexagon[k].get_y()<0)?-12:2;
 
 Image1->Canvas->MoveTo(hexagon[k].get_x()+hexagon[0].get_x(),hexagon[k].get_y()+hexagon[0].get_y());
 Image1->Canvas->TextOutA(hexagon[k].get_x()+hexagon[0].get_x()+off_x,hexagon[k].get_y()+hexagon[0].get_y()+off_y,hexagon[k].get_let());
-Image1->Canvas->MoveTo(hexagon[k].get_x()+hexagon[0].get_x(),hexagon[k].get_y()+hexagon[0].get_y());
-Image1->Canvas->LineTo(hexagon[k+1].get_x()+hexagon[0].get_x(),hexagon[k+1].get_y()+hexagon[0].get_y());
 }
+
 }
 
 void rotandscale(TImage* Image1, double par, int sw, MyPoint& V)
