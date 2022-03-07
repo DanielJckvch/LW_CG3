@@ -103,19 +103,24 @@ Image1->Canvas->LineTo(hexagon[k+1].get_x()+hexagon[0].get_x(),hexagon[k+1].get_
 Image1->Canvas->MoveTo(hexagon[k].get_x()+hexagon[0].get_x(),hexagon[k].get_y()+hexagon[0].get_y());
 Image1->Canvas->LineTo(hexagon[1].get_x()+hexagon[0].get_x(),hexagon[1].get_y()+hexagon[0].get_y());
 //Закраска
+TColor* line;
 for(j=0; j<441; j++)
 {
 int f_pix=-1;
+line=(TColor*)Image1->Picture->Bitmap->ScanLine[j];
 for(i=0; i<537; i++)
 {
-   if((Image1->Canvas->Pixels[i][j]==clBlack)&&(f_pix==-1))
+   if((line[i]==clBlack)&&(f_pix==-1))
    {
     f_pix=i;
    }
-   else if((f_pix!=-1)&&(Image1->Canvas->Pixels[i][j]==clBlack)&&(Image1->Canvas->Pixels[i-1][j]!=clBlack))
+   else if((f_pix!=-1)&&(line[i]==clBlack)&&(line[i-1]!=clBlack))
    {
-      for(k=i-1; k>f_pix;k--)
-      {Image1->Canvas->Pixels[k][j]=clRed;}
+        Image1->Canvas->Pen->Color=clRed;
+        Image1->Canvas->MoveTo(i-1,j);
+        Image1->Canvas->LineTo(f_pix, j);
+        Image1->Canvas->Pen->Color=clBlack;
+      break;
    }
 }
 }
