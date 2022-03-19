@@ -17,7 +17,14 @@ void hexagoninit(MyPoint* h);
 MyPoint* hexagon=new MyPoint[7];
 int x=200;
 int y=200;
-int rad=100;
+int orig[7][2]=
+{{x,y},
+{ 0,100},
+{-14,90},
+{-20,70},
+{-60,11},
+{-40,-30},
+{50,-50}};
 double a_step=10;
 int sc_step=2;
 int mov_step=10;
@@ -37,7 +44,9 @@ printhexagon(hexagon, Image1);
 //---------------------------------------------------------------------------
 void printhexagon(MyPoint* hexagon, TImage* Image1)
 {
-
+int k;
+int i, j;
+ /*
 int angle=60;
 //Матрица поворота
 double r[3][3];
@@ -51,8 +60,7 @@ double r[3][3];
  r[2][1]=0;
  r[2][2]=1;
 bool out_f=true;
-int k;
-int i, j;
+
 //Для проверки выхода точек в отрицательную область
 while(out_f)
 {
@@ -65,7 +73,7 @@ v1[2]=1;
 int v2[3]={0, 0, 1};
 //Вычисление координат точек относительно 0
 
-for(k=2; k<8; k++)
+for(k=1; k<8; k++)
 {
 for (i = 0;i < 3;i++)
 {
@@ -76,6 +84,7 @@ for (i = 0;i < 3;i++)
         }
         v2[i] = sum;
 }
+
  //Проверка на выход точки за холст
 v1[0]=v2[0];
 v1[1]=v2[1];
@@ -93,6 +102,21 @@ hexagon[k].set_y(v2[1]);
 }
 
 }
+  */
+//Проверка на выход точки за холст
+for(k=1; k<7; k++)
+{
+if(hexagon[k].get_x()+hexagon[0].get_x()<=0||hexagon[k].get_y()+hexagon[0].get_y()<=0)
+{
+for(i=0;i<7;i++)
+{
+hexagon[i].set_x();
+hexagon[i].set_y();
+}
+break;
+ }
+ }
+
 //Отрисовка контура
 int off_x, off_y;
 for(k=1; k<6; k++)
@@ -137,7 +161,7 @@ Image1->Canvas->TextOutA(hexagon[k].get_x()+hexagon[0].get_x()+off_x,hexagon[k].
 
 }
 
-void rotandscale(TImage* Image1, double par, int sw, MyPoint& V)
+void rotandscale(TImage* Image1, double par, int sw, MyPoint* V)
 {
 double r[3][3];
 // Выбор способа преобразования
@@ -166,8 +190,11 @@ double r[3][3];
  r[2][2]=1;
  break;
  }
+ int k=6;
+ while(k>0)
+ {
 // Преобразование точки V
-int v1[3]={V.get_x(),V.get_y(),1};
+int v1[3]={V[k].get_x(),V[k].get_y(),1};
 int v2[3]={0, 0, 1};
 int i, j;
 for (i = 0;i < 3;i++)
@@ -179,19 +206,17 @@ for (i = 0;i < 3;i++)
         }
 
         v2[i] = sum;
-        if(v2[i]-sum>=0.5)
-        {
-        v2[i]++;
-        }
 }
-V.set_x(v2[0]);
-V.set_y(v2[1]);
+V[k].set_x(v2[0]);
+V[k].set_y(v2[1]);
+k--;
 }
 
+}
 void __fastcall TForm1::Button1Click(TObject *Sender)
 {
 //Поворот против часовой стрелки
-rotandscale(Image1, -a_step, 0, (hexagon[1]));
+rotandscale(Image1, -a_step, 0, hexagon);
 //Очистка холста
 TRect rct;
 rct = Rect(0,0,Image1->Width,Image1->Height);
@@ -205,7 +230,7 @@ printhexagon(hexagon, Image1);
 void __fastcall TForm1::Button2Click(TObject *Sender)
 {
 //Поворот по часовой стрелке
-rotandscale(Image1, a_step, 0, (hexagon[1]));
+rotandscale(Image1, a_step, 0, hexagon);
 //Очистка холста
 TRect rct;
 rct = Rect(0,0,Image1->Width,Image1->Height);
@@ -219,7 +244,7 @@ printhexagon(hexagon, Image1);
 void __fastcall TForm1::Button3Click(TObject *Sender)
 {
 //?Масштаб -
-rotandscale(Image1, (double)1/sc_step, 1, (hexagon[1]));
+rotandscale(Image1, (double)1/sc_step, 1, hexagon);
 //Очистка холста
 TRect rct;
 rct = Rect(0,0,Image1->Width,Image1->Height);
@@ -233,7 +258,7 @@ printhexagon(hexagon, Image1);
 void __fastcall TForm1::Button4Click(TObject *Sender)
 {
 //Масштаб +
-rotandscale(Image1, sc_step, 1, (hexagon[1]));
+rotandscale(Image1, sc_step, 1, hexagon);
 //Очистка холста
 TRect rct;
 rct = Rect(0,0,Image1->Width,Image1->Height);
@@ -301,10 +326,10 @@ printhexagon(hexagon, Image1);
 //---------------------------------------------------------------------------
 void hexagoninit(MyPoint* h)
 { int i=0;
- h[0]=MyPoint(0,x, y);
- h[1]=MyPoint('A',0, rad);
- for(i=2; i<7; i++)
+ //h[0]=MyPoint(0,x, y);
+ //h[1]=MyPoint('A',0, rad);
+ for(i=0; i<7; i++)
  {
- h[i]=MyPoint('A'+i-1,0,0);
+ h[i]=MyPoint('A'+i-1,orig[i][0],orig[i][1]);
  }
  }
